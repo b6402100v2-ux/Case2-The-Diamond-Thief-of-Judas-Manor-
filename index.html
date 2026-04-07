@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Diamond Thief of Judas Manor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <section id="screen-lobby" class="screen active">
+            <div class="glass-panel">
+                <h1>Judas Manor</h1>
+                <h2 class="subtitle">The Diamond Thief</h2>
+                <div class="form-group">
+                    <label>Team Name</label>
+                    <input type="text" id="team-name" placeholder="Enter your detective agency..." required>
+                </div>
+                
+                <label>Investigators (4 Players Required)</label>
+                <div class="players-grid">
+                    <input type="text" id="p1-name" placeholder="Player 1" required>
+                    <input type="text" id="p2-name" placeholder="Player 2" required>
+                    <input type="text" id="p3-name" placeholder="Player 3" required>
+                    <input type="text" id="p4-name" placeholder="Player 4" required>
+                </div>
+
+                <div class="form-group avatar-selection">
+                    <label>Agency Emblem</label>
+                    <div class="avatars">
+                        <label><input type="radio" name="avatar" value="💎" checked> <span>💎</span></label>
+                        <label><input type="radio" name="avatar" value="🕵️‍♂️"> <span>🕵️‍♂️</span></label>
+                        <label><input type="radio" name="avatar" value="📜"> <span>📜</span></label>
+                        <label><input type="radio" name="avatar" value="🩸"> <span>🩸</span></label>
+                    </div>
+                </div>
+
+                <button id="btn-enter" class="glow-btn">Enter the Manor</button>
+                <p id="error-msg" class="error hidden">Please enter team name and all 4 players.</p>
+            </div>
+        </section>
+
+        <section id="screen-intro" class="screen hidden">
+            <div class="glass-panel text-center">
+                <h2>The Crime Scene</h2>
+                
+                <p class="story-text">
+                    "Lord Judas is a wealthy, elderly nobleman who lives in Judas Manor, a grand estate on the outskirts of the city. He owns a legendary diamond called <strong>"The Judas Eye"</strong>, kept in a glass case in his private study.<br><br>
+                    One morning, Lord Judas discovers it is gone. The police are called in. Lord Judas was away on a business trip overnight, leaving four residents in the manor. All four are suspects."
+                </p>
+                <button id="btn-start-inv" class="glow-btn">Start Investigation</button>
+            </div>
+        </section>
+
+        <section id="screen-hub" class="screen hidden">
+            <div class="header-bar">
+                <span>Team: <strong id="hub-team-name"></strong></span>
+                <span class="timer-box">Time: <span id="main-timer">07:00</span></span>
+            </div>
+            
+            <div class="glass-panel">
+                <h3>Select Your File</h3>
+                <p class="instruction">Each investigator must read their assigned suspect file.</p>
+                <div class="hub-grid" id="suspect-hubs">
+                    </div>
+            </div>
+        </section>
+
+        <section id="screen-reading" class="screen hidden">
+            <div class="header-bar alert-bar">
+                <span>Reading Time!</span>
+                <span class="timer-box">Time Left: <span id="read-timer">01:00</span></span>
+            </div>
+            <div class="glass-panel">
+                <h3 id="read-suspect-name" class="accent-text"></h3>
+                <p><strong>Status:</strong> <span id="read-status"></span></p>
+                <p><strong>Characteristics:</strong> <span id="read-chars"></span></p>
+                <hr>
+                <p id="read-speech" class="story-text speech-text"></p>
+                <button id="btn-skip-read" class="outline-btn">I'm ready (Skip Timer)</button>
+            </div>
+        </section>
+
+        <section id="screen-questions" class="screen hidden">
+            <div class="glass-panel case-file">
+                <h3 id="q-title">Interrogation</h3>
+                <p id="q-text" class="question-text"></p>
+                <div id="q-options" class="options-grid"></div>
+            </div>
+        </section>
+
+        <section id="screen-voting" class="screen hidden">
+            <div class="header-bar alert-bar">
+                <span>The Final Verdict</span>
+                <span class="timer-box">Vote Time: <span id="vote-timer">07:00</span></span>
+            </div>
+            <div class="glass-panel text-center">
+                
+                <p>Discuss with your team. Who stole The Judas Eye?</p>
+                <div class="vote-grid">
+                    <div class="vote-card" data-suspect="Julia (Head Maid)">
+                        <div class="icon">🧹</div><h4>Julia</h4><p>Head Maid</p>
+                    </div>
+                    <div class="vote-card" data-suspect="Ann (Stepmother)">
+                        <div class="icon">🍷</div><h4>Ann</h4><p>Stepmother</p>
+                    </div>
+                    <div class="vote-card" data-suspect="Lilly (Daughter)">
+                        <div class="icon">📚</div><h4>Lilly</h4><p>Daughter</p>
+                    </div>
+                    <div class="vote-card" data-suspect="Lucas (Gardener)">
+                        <div class="icon">👨‍🌾</div><h4>Lucas</h4><p>Gardener</p>
+                    </div>
+                </div>
+                <button id="btn-submit-case" class="glow-btn disabled" disabled>Submit Arrest Warrant</button>
+            </div>
+        </section>
+
+        <section id="screen-result" class="screen hidden">
+            <div class="glass-panel text-center">
+                <h2>Case Closed</h2>
+                <div class="result-data">
+                    <p><strong>Team:</strong> <span id="res-team"></span></p>
+                    <p><strong>Total Score:</strong> <span id="res-score"></span> / 12</p>
+                    <p><strong>Arrested:</strong> <span id="res-culprit" class="accent-text"></span></p>
+                </div>
+                <div id="loading-status" class="status-msg">Transmitting data to HQ...</div>
+            </div>
+        </section>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
