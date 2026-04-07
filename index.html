@@ -30,12 +30,8 @@
             background: radial-gradient(circle at 50% 0%, #1e293b 0%, var(--bg-dark) 80%);
             color: var(--text-main);
             font-family: var(--font-body);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow-x: hidden;
+            min-height: 100vh; display: flex; justify-content: center; align-items: center;
+            padding: 20px; overflow-x: hidden;
         }
 
         body::before {
@@ -43,19 +39,10 @@
             background: radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 70%); z-index: -1;
         }
 
-        .app-container {
-            width: 100%;
-            max-width: 900px;
-            position: relative;
-        }
-
+        .app-container { width: 100%; max-width: 900px; position: relative; }
         .screen { display: none; animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         .screen.active { display: block; }
-
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(20px); filter: blur(5px); } 
-            to { opacity: 1; transform: translateY(0); filter: blur(0); } 
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); filter: blur(5px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
 
         h1, h2, h3 { font-family: var(--font-heading); color: var(--accent-gold); letter-spacing: 2px; margin-bottom: 15px; }
         h1 { font-size: 3rem; text-align: center; text-shadow: 0 0 20px var(--accent-gold-glow); line-height: 1.2; }
@@ -71,7 +58,6 @@
 
         .form-group { margin-bottom: 25px; }
         label { display: block; margin-bottom: 10px; color: var(--text-muted); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; }
-        
         input[type="text"] {
             width: 100%; padding: 15px 20px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
             color: white; border-radius: 12px; font-family: var(--font-body); font-size: 1rem; transition: all 0.3s ease;
@@ -102,12 +88,16 @@
         .hub-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent-gold); opacity: 0; transition: 0.3s; }
         .hub-card:hover:not(.done) { border-color: var(--accent-gold); background: rgba(212,175,55,0.05); transform: translateY(-5px); }
         .hub-card:hover:not(.done)::before { opacity: 1; }
-        .hub-card.done { border-color: var(--accent-green); opacity: 0.6; pointer-events: none; }
-        .hub-card.done::before { background: var(--accent-green); opacity: 1; }
+        
+        /* สไตล์สำหรับปุ่มที่ทำเสร็จแล้ว (โดนล็อก) */
+        .hub-card.done { border-color: var(--glass-border); background: rgba(15, 23, 42, 0.8); opacity: 0.8; pointer-events: none; }
+        .hub-card.done::before { background: var(--text-muted); opacity: 1; }
+        .lock-icon { font-size: 2.5rem; margin: 10px 0; animation: lockPulse 2s infinite; }
+        @keyframes lockPulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); text-shadow: 0 0 15px rgba(255,255,255,0.3); } 100% { transform: scale(1); } }
+        
         .status-badge { display: inline-block; padding: 6px 15px; border-radius: 30px; font-size: 0.85rem; margin-top: 15px; background: #334155; font-weight: 600; text-transform: uppercase; }
-        .done .status-badge { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+        .done .status-badge { background: rgba(255, 255, 255, 0.1); color: var(--text-muted); }
 
-        /* Investigation Layout (Reading + Quiz side by side on PC) */
         .investigation-container { display: flex; flex-direction: column; gap: 20px; }
         @media (min-width: 800px) { .investigation-container { flex-direction: row; align-items: stretch; } }
         
@@ -122,7 +112,6 @@
         .option-btn { background: white; border: 2px solid #cbd5e1; color: #1e293b; text-align: left; padding: 15px 20px; border-radius: 12px; font-size: 1rem; font-weight: 500; text-transform: none; }
         .option-btn:hover { border-color: #854d0e; background: #fefce8; transform: translateX(5px); }
 
-        /* Feedback Styles */
         .feedback-item { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--text-muted); text-align: left;}
         .feedback-item.correct { border-color: var(--accent-green); }
         .feedback-item.wrong { border-color: var(--accent-red); }
@@ -141,7 +130,6 @@
 </head>
 <body>
     <div class="app-container">
-        
         <section id="screen-lobby" class="screen active">
             <div class="glass-panel">
                 <h1>Judas Manor</h1>
@@ -195,7 +183,7 @@
             
             <div class="glass-panel">
                 <h3>Select Your File</h3>
-                <p style="color: var(--text-muted);">Pass the device to the assigned investigator.</p>
+                <p style="color: var(--text-muted);" id="hub-subtitle">Waiting for team to finish investigation... <span style="display:inline-block; animation: spin 1s linear infinite;">⏳</span></p>
                 <div class="hub-grid" id="suspect-hubs">
                     </div>
             </div>
@@ -223,7 +211,6 @@
                             <p>Read the testimony carefully. Questions will appear when time is up.</p>
                             <button id="btn-skip-read" class="outline-btn" style="border-color: #94a3b8; color: #475569;">I'm ready (Skip Timer)</button>
                         </div>
-
                         <div id="quiz-active" class="hidden">
                             <h3 id="q-title" style="color: #854d0e; font-family: var(--font-body); font-size: 1.1rem; text-transform: none;">Question 1/3</h3>
                             <p id="q-text" class="question-text"></p>
@@ -238,10 +225,7 @@
             <div class="glass-panel text-center">
                 <h2>Interrogation Report</h2>
                 <p style="color: var(--text-muted); margin-bottom: 20px;">Review your deductions before returning to the team.</p>
-                
-                <div id="feedback-list" style="margin-bottom: 25px;">
-                    </div>
-                
+                <div id="feedback-list" style="margin-bottom: 25px;"></div>
                 <button id="btn-return-hub" class="glow-btn">Return to Team Hub</button>
             </div>
         </section>
@@ -285,70 +269,28 @@
                 </div>
             </div>
         </section>
-
     </div>
 
     <script>
+        // === เนื้อเรื่องคำถามชุดเดิม ===
         const suspectsData = [
-            {
-                name: "Julia", role: "Head Maid", chars: "Royal, quiet, observant",
-                speech: "I have worked in this place for over twenty years. That night, I went back to my room at 9 PM as usual. I heard footsteps near the garden around midnight, but I thought it was the cat. Lord Judas has a grey Persian and it often wanders at night.<br><br>Next day, I went inside Lord Judas's family bedrooms to wake all of them. Why I can get into their rooms? Ah, every staff in this house has accessed keys for every room. My Lord and his daughter were already downstairs, but she did not come down to breakfast. I found that unusual, because she had never missed a meal. As for the gardener, I noticed his light was still on. His cottage was outside near the garden entrance, and I could see it from the house's window. I asked Lord Judas whether I should tell that man to go outside and work or not, but my Lord refused it. Frankly, I wanted to tell my Lord that I saw him walked out Ann's room. However, I am just a maid. So, I remained silent.<br>That is all I have to say.",
-                questions: [
-                    { q: `"..., but I thought it was the cat." "it" in this line refers to …`, options: ["A. footsteps", "B. the cat", "C. the garden"], ans: "A. footsteps" },
-                    { q: `"..., but she did not come down to breakfast." "she" in this line refers to …`, options: ["A. Julia", "B. Lilly", "C. Ann"], ans: "C. Ann" },
-                    { q: `"Frankly, I wanted to tell my Lord that I saw him walked out Ann's room..." "him" in this line refers to …`, options: ["A. the cottage", "B. Lord Judas", "C. Lucas"], ans: "C. Lucas" }
-                ]
-            },
-            {
-                name: "Ann", role: "Stepmother", chars: "Arrogant, beautiful, determine",
-                speech: "Yesterday? I was in my room the entire evening and did not join the dinner. My husband and I had an argument, so I quietly drank wine and cried alone. Around 10 p.m., I went to the kitchen to washed my wine glasses before going to bed. I did not hear anything. Actually, this house is always making strange sounds at night.<br><br>The diamond? Honestly, I never understood why he kept it out in the first place. It should have been locked away in a bank. I told him so many times, but he never listens. He is always reckless with anything valuable. Every staff, including the maid and the gardener, knows where the diamond is. Especially the one who works for a long time. She is the ONLY one who has all keys in this house and knows which place she can hide it after stealing. Instead of wasting time questioning me, go ask that arrogant maid about what she had done last night.",
-                questions: [
-                    { q: `"My husband and I had an argument,..." "My husband" in this line refers to...`, options: ["A. Lucas", "B. Lord Judas", "C. Julia"], ans: "B. Lord Judas" },
-                    { q: `"Honestly, I never understood why he kept it out..." "it" in this line refers to...`, options: ["A. the maid", "B. the diamond", "C. the bank"], ans: "B. the diamond" },
-                    { q: `"Especially the one who works for a long time..." "the one" in this line refers to...`, options: ["A. Lilly", "B. Ann", "C. Julia"], ans: "C. Julia" }
-                ]
-            },
-            {
-                name: "Lilly", role: "Daughter", chars: "Optimistic, generous, shy",
-                speech: "Um, hi... I mean, I still can't really believe it happened. That diamond is a very important thing for my family. Dad always tells me to take care of it.<br><br>That night, I was reading books in the library until about 10.30. Then, I went to the kitchen to make hot tea because it helps me feel cozy. When I got there, the light was already on. I thought that Julia forgot to turn it off. Frankly speaking, I wasn't afraid of ghosts, so I made my tea and went back to my room. Ah… Before I got into my room, I heard a man voice from Ann's room. It was not my father, but it kinda… familiar? I didn't think it is the gardener because he mostly worked in the garden and never came inside our house. They sounded seriously. Or maybe excited? I’m not really sure. Her voice was low, so I couldn’t hear anything properly. I didn’t stay there because that would be rude. So, I just went on to bed after that. I honestly didn’t think it meant anything.",
-                questions: [
-                    { q: `"... because it helps me feel cozy." "it" in this line refers to...`, options: ["A. the diamond", "B. the books", "C. the hot tea"], ans: "C. the hot tea" },
-                    { q: `"When I got there, the light was already on." "there" in this line refers to...`, options: ["A. the library", "B. the kitchen", "C. Lilly's room"], ans: "C. Lilly's room" },
-                    { q: `"Her voice was low,..." "Her" in this line refers to...`, options: ["A. Lilly", "B. Ann", "C. Julia"], ans: "B. Ann" }
-                ]
-            },
-            {
-                name: "Lucas", role: "Gardener", chars: "Serious, determined, hardworking",
-                speech: "Yesterday, I came back to my cottage around 6.15 in the evening. I had dinner alone. After that, I decided to took a shower, put on my boots, and walked to the garden to water flowers. Yes, that is part of my responsibility. Around 8 P.M., I locked the garden's entrance before going to bed.<br><br>Oh! I think the alarm panel is broken. Its old sensor sometimes takes a moment to settle after the kitchen lights are switched on. I remember glancing at the window and saw the kitchen's light around 10 p.m. Nothing unusual enough to report. I am only trying to be precise.<br><br>I've worked here for two years. I respect Lord Judas and his family. I have been served these people for ten years. Even though Ann is my new mistress, I still adore and respect her. I swear I would never do anything to harm them. The diamond is a loss for all of us. I hope the police find it soon.",
-                questions: [
-                    { q: `"Yes, that is part of my responsibility." "that" in this line refers to...`, options: ["A. watering flowers", "B. walking to the garden", "C. going to bed"], ans: "A. watering flowers" },
-                    { q: `"Its old sensor sometimes takes a moment..." "its" in this line refers to...`, options: ["A. the kitchen lights", "B. the alarm panel", "C. the garden's entrance"], ans: "B. the alarm panel" },
-                    { q: `"I swear I would never do anything to harm them." "them" in this line refers to...`, options: ["A. The new mistress", "B. Ann and Lilly", "C. Lord Judas and his family"], ans: "C. Lord Judas and his family" }
-                ]
-            }
+            { name: "Julia", role: "Head Maid", chars: "Royal, quiet, observant", speech: "I have worked in this place for over twenty years. That night, I went back to my room at 9 PM as usual. I heard footsteps near the garden around midnight, but I thought it was the cat. Lord Judas has a grey Persian and it often wanders at night.<br><br>Next day, I went inside Lord Judas's family bedrooms to wake all of them. Why I can get into their rooms? Ah, every staff in this house has accessed keys for every room. My Lord and his daughter were already downstairs, but she did not come down to breakfast. I found that unusual, because she had never missed a meal. As for the gardener, I noticed his light was still on. His cottage was outside near the garden entrance, and I could see it from the house's window. I asked Lord Judas whether I should tell that man to go outside and work or not, but my Lord refused it. Frankly, I wanted to tell my Lord that I saw him walked out Ann's room. However, I am just a maid. So, I remained silent.<br>That is all I have to say.", questions: [{ q: `"..., but I thought it was the cat." "it" in this line refers to …`, options: ["A. footsteps", "B. the cat", "C. the garden"], ans: "A. footsteps" }, { q: `"..., but she did not come down to breakfast." "she" in this line refers to …`, options: ["A. Julia", "B. Lilly", "C. Ann"], ans: "C. Ann" }, { q: `"Frankly, I wanted to tell my Lord that I saw him walked out Ann's room..." "him" in this line refers to …`, options: ["A. the cottage", "B. Lord Judas", "C. Lucas"], ans: "C. Lucas" }]},
+            { name: "Ann", role: "Stepmother", chars: "Arrogant, beautiful, determine", speech: "Yesterday? I was in my room the entire evening and did not join the dinner. My husband and I had an argument, so I quietly drank wine and cried alone. Around 10 p.m., I went to the kitchen to washed my wine glasses before going to bed. I did not hear anything. Actually, this house is always making strange sounds at night.<br><br>The diamond? Honestly, I never understood why he kept it out in the first place. It should have been locked away in a bank. I told him so many times, but he never listens. He is always reckless with anything valuable. Every staff, including the maid and the gardener, knows where the diamond is. Especially the one who works for a long time. She is the ONLY one who has all keys in this house and knows which place she can hide it after stealing. Instead of wasting time questioning me, go ask that arrogant maid about what she had done last night.", questions: [{ q: `"My husband and I had an argument,..." "My husband" in this line refers to...`, options: ["A. Lucas", "B. Lord Judas", "C. Julia"], ans: "B. Lord Judas" }, { q: `"Honestly, I never understood why he kept it out..." "it" in this line refers to...`, options: ["A. the maid", "B. the diamond", "C. the bank"], ans: "B. the diamond" }, { q: `"Especially the one who works for a long time..." "the one" in this line refers to...`, options: ["A. Lilly", "B. Ann", "C. Julia"], ans: "C. Julia" }]},
+            { name: "Lilly", role: "Daughter", chars: "Optimistic, generous, shy", speech: "Um, hi... I mean, I still can't really believe it happened. That diamond is a very important thing for my family. Dad always tells me to take care of it.<br><br>That night, I was reading books in the library until about 10.30. Then, I went to the kitchen to make hot tea because it helps me feel cozy. When I got there, the light was already on. I thought that Julia forgot to turn it off. Frankly speaking, I wasn't afraid of ghosts, so I made my tea and went back to my room. Ah… Before I got into my room, I heard a man voice from Ann's room. It was not my father, but it kinda… familiar? I didn't think it is the gardener because he mostly worked in the garden and never came inside our house. They sounded seriously. Or maybe excited? I’m not really sure. Her voice was low, so I couldn’t hear anything properly. I didn’t stay there because that would be rude. So, I just went on to bed after that. I honestly didn’t think it meant anything.", questions: [{ q: `"... because it helps me feel cozy." "it" in this line refers to...`, options: ["A. the diamond", "B. the books", "C. the hot tea"], ans: "C. the hot tea" }, { q: `"When I got there, the light was already on." "there" in this line refers to...`, options: ["A. the library", "B. the kitchen", "C. Lilly's room"], ans: "C. Lilly's room" }, { q: `"Her voice was low,..." "Her" in this line refers to...`, options: ["A. Lilly", "B. Ann", "C. Julia"], ans: "B. Ann" }]},
+            { name: "Lucas", role: "Gardener", chars: "Serious, determined, hardworking", speech: "Yesterday, I came back to my cottage around 6.15 in the evening. I had dinner alone. After that, I decided to took a shower, put on my boots, and walked to the garden to water flowers. Yes, that is part of my responsibility. Around 8 P.M., I locked the garden's entrance before going to bed.<br><br>Oh! I think the alarm panel is broken. Its old sensor sometimes takes a moment to settle after the kitchen lights are switched on. I remember glancing at the window and saw the kitchen's light around 10 p.m. Nothing unusual enough to report. I am only trying to be precise.<br><br>I've worked here for two years. I respect Lord Judas and his family. I have been served these people for ten years. Even though Ann is my new mistress, I still adore and respect her. I swear I would never do anything to harm them. The diamond is a loss for all of us. I hope the police find it soon.", questions: [{ q: `"Yes, that is part of my responsibility." "that" in this line refers to...`, options: ["A. watering flowers", "B. walking to the garden", "C. going to bed"], ans: "A. watering flowers" }, { q: `"Its old sensor sometimes takes a moment..." "its" in this line refers to...`, options: ["A. the kitchen lights", "B. the alarm panel", "C. the garden's entrance"], ans: "B. the alarm panel" }, { q: `"I swear I would never do anything to harm them." "them" in this line refers to...`, options: ["A. The new mistress", "B. Ann and Lilly", "C. Lord Judas and his family"], ans: "C. Lord Judas and his family" }]}
         ];
 
-        // LING APP SCRIPT ของครู
+        // LING APP SCRIPT ของครู (อย่าลืม Deploy ใหม่!)
         const GAS_URL = "https://script.google.com/macros/s/AKfycbzFaATyqxzmZ6PGrsaBX2xgT3Cce97GChuFNXGW_V5b4uTLTnuUjWWzBG5LpDyxZb7F0g/exec";
 
         let game = {
-            team: "", players: [], avatar: "", totalScore: 0,
+            team: "", teamId: "", players: [], avatar: "", totalScore: 0,
             mainTime: 420, voteTime: 420, timeUsed: 0,
-            mainInterval: null, readInterval: null, voteInterval: null,
-            currentPlayerIndex: null, currentQuestionIndex: 0,
-            votedCulprit: "",
-            currentAnswers: [] // เก็บผลตอบของคนที่กำลังเล่นเพื่อไปโชว์เฉลย
+            mainInterval: null, readInterval: null, voteInterval: null, syncInterval: null,
+            currentPlayerIndex: null, currentQuestionIndex: 0, votedCulprit: "", currentAnswers: []
         };
 
-        const screens = {
-            lobby: document.getElementById('screen-lobby'),
-            intro: document.getElementById('screen-intro'),
-            hub: document.getElementById('screen-hub'),
-            investigation: document.getElementById('screen-investigation'),
-            feedback: document.getElementById('screen-feedback'),
-            voting: document.getElementById('screen-voting'),
-            result: document.getElementById('screen-result')
-        };
+        const screens = { lobby: document.getElementById('screen-lobby'), intro: document.getElementById('screen-intro'), hub: document.getElementById('screen-hub'), investigation: document.getElementById('screen-investigation'), feedback: document.getElementById('screen-feedback'), voting: document.getElementById('screen-voting'), result: document.getElementById('screen-result') };
 
         function switchScreen(id) {
             Object.values(screens).forEach(s => s.classList.remove('active'));
@@ -362,14 +304,13 @@
             const p3 = document.getElementById('p3-name').value.trim();
             const p4 = document.getElementById('p4-name').value.trim();
 
-            if(!tName || !p1 || !p2 || !p3 || !p4) {
-                document.getElementById('error-msg').classList.remove('hidden');
-                return;
-            }
+            if(!tName || !p1 || !p2 || !p3 || !p4) { document.getElementById('error-msg').classList.remove('hidden'); return; }
             
             game.team = tName;
             game.avatar = document.querySelector('input[name="avatar"]:checked').value;
-            // ระบบสุ่มแจกบท (อิงตามลำดับกรอกชื่อ)
+            // สร้าง Team ID พิเศษเพื่อเช็คว่าเป็นทีมเดียวกันไหม (ตัดช่องว่างและทำเป็นตัวเล็กหมด)
+            game.teamId = (tName + p1 + p2 + p3 + p4 + game.avatar).replace(/\s+/g, '').toLowerCase();
+            
             game.players = [
                 { name: p1, suspect: suspectsData[0], status: 'Pending' },
                 { name: p2, suspect: suspectsData[1], status: 'Pending' },
@@ -384,7 +325,33 @@
             switchScreen('hub');
             renderHub();
             startMainTimer();
+            startSyncPolling();
         });
+
+        // ฟังก์ชันถาม GAS ทุกๆ 5 วินาที
+        function startSyncPolling() {
+            if(game.syncInterval) clearInterval(game.syncInterval);
+            game.syncInterval = setInterval(() => {
+                fetch(GAS_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: "getSync", teamId: game.teamId })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === "success" && data.data) {
+                        let updated = false;
+                        data.data.forEach((status, i) => {
+                            if(status === "Done" && game.players[i].status !== "Done") {
+                                game.players[i].status = "Done";
+                                updated = true;
+                            }
+                        });
+                        if(updated) renderHub(); // ถ้ามีเพื่อนเสร็จ ให้รีเฟรชหน้าจอขึ้นแม่กุญแจ
+                    }
+                }).catch(err => console.log("Sync Error (Ignored)"));
+            }, 5000); 
+        }
 
         function renderHub() {
             document.getElementById('hub-team-name').textContent = `${game.team} ${game.avatar}`;
@@ -396,57 +363,64 @@
             game.players.forEach((p, index) => {
                 const card = document.createElement('div');
                 card.className = `hub-card ${p.status === 'Done' ? 'done' : ''}`;
-                card.innerHTML = `
-                    <h4>${p.name}</h4>
-                    <p style="color:#cbd5e1; font-size:0.9rem;">File: <strong>${p.suspect.name}</strong></p>
-                    <span class="status-badge">${p.status}</span>
-                `;
-                if (p.status !== 'Done') {
+                
+                // ถ้าระบบบอกว่าเสร็จแล้ว ให้โชว์แม่กุญแจ 🔒
+                if (p.status === 'Done') {
+                    card.innerHTML = `
+                        <h4>${p.name}</h4>
+                        <p style="color:#cbd5e1; font-size:0.9rem;">File: <strong>${p.suspect.name}</strong></p>
+                        <div class="lock-icon">🔒</div>
+                        <span class="status-badge">LOCKED</span>
+                    `;
+                } else {
                     allDone = false;
+                    card.innerHTML = `
+                        <h4>${p.name}</h4>
+                        <p style="color:#cbd5e1; font-size:0.9rem;">File: <strong>${p.suspect.name}</strong></p>
+                        <span class="status-badge">${p.status}</span>
+                    `;
                     card.onclick = () => startReadingPhase(index);
                 }
                 hubGrid.appendChild(card);
             });
 
+            // ถ้าเพื่อนทุกคนล็อคกุญแจครบ 4 คน เด้งเข้าหน้าโหวตอัตโนมัติ!
             if (allDone) {
-                clearInterval(game.mainInterval);
-                switchScreen('voting');
-                startVotingTimer();
+                document.getElementById('hub-subtitle').innerHTML = "All evidence collected. Proceeding to Verdict...";
+                setTimeout(() => {
+                    clearInterval(game.mainInterval);
+                    clearInterval(game.syncInterval);
+                    switchScreen('voting');
+                    startVotingTimer();
+                }, 2000);
             }
         }
 
         function formatTime(seconds) {
-            let m = Math.floor(seconds / 60);
-            let s = seconds % 60;
+            let m = Math.floor(seconds / 60); let s = seconds % 60;
             return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
         }
 
         function startMainTimer() {
             game.mainInterval = setInterval(() => {
-                game.mainTime--;
-                game.timeUsed++;
+                game.mainTime--; game.timeUsed++;
                 document.getElementById('main-timer').textContent = formatTime(game.mainTime);
-                if(game.mainTime <= 0) {
-                    clearInterval(game.mainInterval);
-                    switchScreen('voting');
-                    startVotingTimer();
-                }
+                if(game.mainTime <= 0) { clearInterval(game.mainInterval); clearInterval(game.syncInterval); switchScreen('voting'); startVotingTimer(); }
             }, 1000);
         }
 
         function startReadingPhase(pIndex) {
+            clearInterval(game.syncInterval); // หยุดเช็คเพื่อนชั่วคราวตอนอ่านหนังสือ
             game.currentPlayerIndex = pIndex;
             const player = game.players[pIndex];
             player.status = 'Reading';
-            game.currentAnswers = []; // รีเซ็ตผลตอบของคนนี้
+            game.currentAnswers = [];
             
-            // อัปเดตหน้า UI
             document.getElementById('inv-player-name').textContent = `Agent ${player.name}`;
             document.getElementById('read-suspect-name').textContent = `Interview: ${player.suspect.name}`;
             document.getElementById('read-profile').textContent = `${player.suspect.role} | ${player.suspect.chars}`;
             document.getElementById('read-speech').innerHTML = `"${player.suspect.speech}"`;
             
-            // สลับ panel โชว์แค่เวลารออ่าน
             document.getElementById('quiz-waiting').classList.remove('hidden');
             document.getElementById('quiz-active').classList.add('hidden');
             document.getElementById('inv-timer').style.display = 'inline';
@@ -457,25 +431,17 @@
             document.getElementById('inv-timer').textContent = formatTime(readTime);
             
             game.readInterval = setInterval(() => {
-                readTime--;
-                document.getElementById('inv-timer').textContent = formatTime(readTime);
-                if(readTime <= 0) {
-                    clearInterval(game.readInterval);
-                    startQuestionsPhase();
-                }
+                readTime--; document.getElementById('inv-timer').textContent = formatTime(readTime);
+                if(readTime <= 0) { clearInterval(game.readInterval); startQuestionsPhase(); }
             }, 1000);
         }
 
-        document.getElementById('btn-skip-read').onclick = () => {
-            clearInterval(game.readInterval);
-            startQuestionsPhase();
-        };
+        document.getElementById('btn-skip-read').onclick = () => { clearInterval(game.readInterval); startQuestionsPhase(); };
 
         function startQuestionsPhase() {
             document.getElementById('quiz-waiting').classList.add('hidden');
             document.getElementById('quiz-active').classList.remove('hidden');
-            document.getElementById('inv-timer').style.display = 'none'; // ซ่อนเวลาอ่าน
-            
+            document.getElementById('inv-timer').style.display = 'none';
             game.currentQuestionIndex = 0;
             renderQuestion();
         }
@@ -492,8 +458,7 @@
             
             qData.options.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.textContent = opt;
+                btn.className = 'option-btn'; btn.textContent = opt;
                 btn.onclick = () => handleAnswer(opt, qData.ans, qData.q);
                 optionsGrid.appendChild(btn);
             });
@@ -503,19 +468,20 @@
             const isCorrect = selected === correct;
             if(isCorrect) game.totalScore++;
             
-            // เก็บข้อมูลไว้โชว์หน้าเฉลย
-            game.currentAnswers.push({
-                q: questionText,
-                selected: selected,
-                correct: correct,
-                isCorrect: isCorrect
-            });
+            game.currentAnswers.push({ q: questionText, selected: selected, correct: correct, isCorrect: isCorrect });
             
             game.currentQuestionIndex++;
             if(game.currentQuestionIndex < 3) {
                 renderQuestion();
             } else {
+                // อัปเดตสถานะให้ตัวเองเป็น Done และยิงข้อมูลไปหา GAS ทันที
                 game.players[game.currentPlayerIndex].status = 'Done';
+                fetch(GAS_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: "updateSync", teamId: game.teamId, pIndex: game.currentPlayerIndex, status: "Done" })
+                }).catch(e => console.log("Silent Update Error"));
+                
                 showFeedbackScreen();
             }
         }
@@ -523,7 +489,6 @@
         function showFeedbackScreen() {
             const list = document.getElementById('feedback-list');
             list.innerHTML = '';
-
             game.currentAnswers.forEach((ans, i) => {
                 const item = document.createElement('div');
                 item.className = `feedback-item ${ans.isCorrect ? 'correct' : 'wrong'}`;
@@ -536,24 +501,20 @@
                 `;
                 list.appendChild(item);
             });
-
             switchScreen('feedback');
         }
 
         document.getElementById('btn-return-hub').onclick = () => {
             switchScreen('hub');
+            startSyncPolling(); // กลับมาเปิดระบบเช็คเพื่อนต่อ
             renderHub();
         };
 
         function startVotingTimer() {
             game.voteInterval = setInterval(() => {
-                game.voteTime--;
-                game.timeUsed++;
+                game.voteTime--; game.timeUsed++;
                 document.getElementById('vote-timer').textContent = formatTime(game.voteTime);
-                if(game.voteTime <= 0) {
-                    clearInterval(game.voteInterval);
-                    submitFinalCase();
-                }
+                if(game.voteTime <= 0) { clearInterval(game.voteInterval); submitFinalCase(); }
             }, 1000);
         }
 
@@ -567,10 +528,7 @@
             });
         });
 
-        document.getElementById('btn-submit-case').onclick = () => {
-            clearInterval(game.voteInterval);
-            submitFinalCase();
-        };
+        document.getElementById('btn-submit-case').onclick = () => { clearInterval(game.voteInterval); submitFinalCase(); };
 
         function submitFinalCase() {
             switchScreen('result');
@@ -579,30 +537,20 @@
             document.getElementById('res-culprit').textContent = game.votedCulprit || "No one (Time Out)";
 
             const payload = JSON.stringify({
-                groupName: game.team,
-                players: game.players.map(p => p.name).join(', '),
-                avatar: game.avatar,
-                score: game.totalScore,
-                timeUsed: game.timeUsed,
-                votedCulprit: game.votedCulprit || "None"
+                action: "finalSubmit", groupName: game.team, players: game.players.map(p => p.name).join(', '),
+                avatar: game.avatar, score: game.totalScore, timeUsed: game.timeUsed, votedCulprit: game.votedCulprit || "None"
             });
 
-            fetch(GAS_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: payload
-            })
+            fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: payload })
             .then(() => {
                 const msg = document.getElementById('loading-status');
                 msg.innerHTML = "✅ Data securely transmitted to headquarters!";
-                msg.style.background = "rgba(16, 185, 129, 0.1)";
-                msg.style.color = "#34d399";
+                msg.style.background = "rgba(16, 185, 129, 0.1)"; msg.style.color = "#34d399";
             })
             .catch(() => {
                 const msg = document.getElementById('loading-status');
                 msg.innerHTML = "❌ Error transmitting data. Please screenshot this page.";
-                msg.style.background = "rgba(225, 29, 72, 0.2)";
-                msg.style.color = "#fca5a5";
+                msg.style.background = "rgba(225, 29, 72, 0.2)"; msg.style.color = "#fca5a5";
             });
         }
     </script>
