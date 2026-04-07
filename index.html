@@ -4,8 +4,215 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Diamond Thief of Judas Manor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           UI/UX DESIGN (CSS)
+           ========================================= */
+        :root {
+            --bg-dark: #07090f;
+            --glass-bg: rgba(15, 23, 42, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent-gold: #d4af37;
+            --accent-gold-glow: rgba(212, 175, 55, 0.4);
+            --accent-red: #e11d48;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --font-heading: 'Cinzel', serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            /* พื้นหลังไล่สีเข้มๆ ดูลึกลับ */
+            background: radial-gradient(circle at 50% 0%, #1e293b 0%, var(--bg-dark) 80%);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* ตกแต่งฉากหลังให้มีแสงสลัวๆ */
+        body::before {
+            content: ''; position: fixed; top: -20%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 70%); z-index: -1;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 800px;
+            position: relative;
+        }
+
+        /* ระบบสลับหน้าจอ */
+        .screen { 
+            display: none; 
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+        .screen.active { 
+            display: block; 
+        }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(30px); filter: blur(5px); } 
+            to { opacity: 1; transform: translateY(0); filter: blur(0); } 
+        }
+
+        /* Typography */
+        h1, h2, h3 { font-family: var(--font-heading); color: var(--accent-gold); letter-spacing: 2px; margin-bottom: 15px; }
+        h1 { font-size: 3rem; text-align: center; text-shadow: 0 0 20px var(--accent-gold-glow); line-height: 1.2; }
+        .subtitle { text-align: center; color: var(--text-muted); font-size: 1.2rem; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 30px; }
+        .accent-text { color: var(--accent-gold); }
+
+        /* Glassmorphism Panels */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .text-center { text-align: center; }
+
+        /* Forms & Inputs */
+        .form-group { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 10px; color: var(--text-muted); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; }
+        
+        input[type="text"] {
+            width: 100%; padding: 15px 20px;
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
+            color: white; border-radius: 12px; font-family: var(--font-body);
+            font-size: 1rem; transition: all 0.3s ease;
+        }
+        input[type="text"]:focus { 
+            outline: none; border-color: var(--accent-gold); 
+            box-shadow: 0 0 15px rgba(212,175,55,0.2); background: rgba(0,0,0,0.6);
+        }
+        .players-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+
+        /* Avatars */
+        .avatars { display: flex; gap: 20px; justify-content: center; margin-top: 10px; }
+        .avatars label { cursor: pointer; font-size: 2.5rem; transition: transform 0.2s; }
+        .avatars label:hover { transform: scale(1.1); }
+        .avatars input { display: none; }
+        .avatars span { 
+            display: inline-block; padding: 15px; border-radius: 50%; 
+            border: 2px solid transparent; transition: all 0.3s;
+            background: rgba(0,0,0,0.3);
+        }
+        .avatars input:checked + span { 
+            border-color: var(--accent-gold); 
+            background: rgba(212,175,55,0.15); 
+            box-shadow: 0 0 20px rgba(212,175,55,0.3);
+        }
+
+        /* Buttons */
+        button { 
+            font-family: var(--font-body); font-weight: 600; font-size: 1.1rem; letter-spacing: 1px;
+            cursor: pointer; border-radius: 12px; transition: all 0.3s ease; 
+            width: 100%; padding: 18px; text-transform: uppercase;
+        }
+        .glow-btn { 
+            background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%); 
+            color: #000; border: none; 
+            box-shadow: 0 8px 20px rgba(212,175,55,0.3); margin-top: 20px; 
+        }
+        .glow-btn:hover:not(:disabled) { 
+            box-shadow: 0 12px 30px rgba(212,175,55,0.5); transform: translateY(-3px); 
+        }
+        .glow-btn.disabled { 
+            background: #334155; color: #94a3b8; box-shadow: none; cursor: not-allowed; 
+        }
+        .outline-btn { 
+            background: transparent; color: var(--text-main); 
+            border: 2px solid var(--text-muted); margin-top: 20px; 
+        }
+        .outline-btn:hover { background: rgba(255,255,255,0.05); border-color: var(--text-main); }
+
+        /* Story & Reading */
+        .story-text { 
+            line-height: 1.9; font-size: 1.1rem; color: #e2e8f0;
+            background: rgba(0,0,0,0.25); padding: 25px; 
+            border-radius: 12px; border-left: 4px solid var(--accent-gold); 
+            text-align: left; margin: 20px 0;
+        }
+        .speech-text { font-style: italic; font-weight: 300; }
+
+        /* Headers & Timers */
+        .header-bar { 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: var(--glass-bg); padding: 15px 25px; 
+            border-radius: 16px; margin-bottom: 25px; border: 1px solid var(--glass-border); 
+            font-weight: 600; backdrop-filter: blur(10px);
+        }
+        .alert-bar { border-color: rgba(225, 29, 72, 0.4); background: rgba(225, 29, 72, 0.1); }
+        .timer-box { font-family: var(--font-heading); font-size: 1.4rem; color: var(--accent-gold); text-shadow: 0 0 10px rgba(212,175,55,0.5); }
+
+        /* Hub Grid */
+        .hub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 25px; }
+        .hub-card { 
+            background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); 
+            padding: 25px; border-radius: 16px; text-align: center; 
+            cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;
+        }
+        .hub-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent-gold); opacity: 0; transition: 0.3s; }
+        .hub-card:hover { border-color: var(--accent-gold); background: rgba(212,175,55,0.05); transform: translateY(-5px); }
+        .hub-card:hover::before { opacity: 1; }
+        .hub-card h4 { color: white; font-size: 1.3rem; margin-bottom: 5px; }
+        
+        .hub-card.done { border-color: #10b981; opacity: 0.6; pointer-events: none; }
+        .hub-card.done::before { background: #10b981; opacity: 1; }
+        
+        .status-badge { 
+            display: inline-block; padding: 6px 15px; border-radius: 30px; 
+            font-size: 0.85rem; margin-top: 15px; background: #334155; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+        }
+        .done .status-badge { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+
+        /* Questions */
+        .case-file { background: #fdf6e3; color: #1e293b; border: none; box-shadow: inset 0 0 30px rgba(0,0,0,0.05); }
+        .case-file h3 { color: #854d0e; }
+        .question-text { font-size: 1.25rem; font-weight: 600; margin-bottom: 25px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { 
+            background: white; border: 2px solid #cbd5e1; color: #1e293b; 
+            text-align: left; padding: 18px 20px; border-radius: 12px; 
+            font-size: 1.05rem; font-weight: 500; text-transform: none;
+        }
+        .option-btn:hover { border-color: #854d0e; background: #fefce8; transform: translateX(5px); }
+
+        /* Voting */
+        .vote-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 30px 0; }
+        .vote-card { 
+            background: rgba(0,0,0,0.5); padding: 25px; border-radius: 16px; 
+            border: 2px solid var(--glass-border); cursor: pointer; transition: all 0.3s; 
+        }
+        .vote-card .icon { font-size: 3rem; margin-bottom: 15px; }
+        .vote-card.selected { 
+            border-color: var(--accent-red); background: rgba(225, 29, 72, 0.15); 
+            box-shadow: 0 0 25px rgba(225, 29, 72, 0.4); transform: scale(1.05);
+        }
+
+        /* Utility */
+        .hidden { display: none !important; }
+        .error { color: #fca5a5; margin-top: 15px; font-size: 0.95rem; text-align: center; background: rgba(225,29,72,0.2); padding: 10px; border-radius: 8px;}
+        hr { border: 0; height: 1px; background: var(--glass-border); margin: 20px 0; }
+        
+        @media (max-width: 600px) {
+            .players-grid, .hub-grid, .vote-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 2.2rem; }
+            .glass-panel { padding: 25px; }
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -13,22 +220,23 @@
         <section id="screen-lobby" class="screen active">
             <div class="glass-panel">
                 <h1>Judas Manor</h1>
-                <h2 class="subtitle">The Diamond Thief</h2>
+                <div class="subtitle">The Diamond Thief</div>
+                
                 <div class="form-group">
-                    <label>Team Name</label>
-                    <input type="text" id="team-name" placeholder="Enter your detective agency..." required>
+                    <label>Detective Agency Name</label>
+                    <input type="text" id="team-name" placeholder="E.g. Sherlock Squad..." autocomplete="off">
                 </div>
                 
                 <label>Investigators (4 Players Required)</label>
                 <div class="players-grid">
-                    <input type="text" id="p1-name" placeholder="Player 1" required>
-                    <input type="text" id="p2-name" placeholder="Player 2" required>
-                    <input type="text" id="p3-name" placeholder="Player 3" required>
-                    <input type="text" id="p4-name" placeholder="Player 4" required>
+                    <input type="text" id="p1-name" placeholder="Player 1 Name" autocomplete="off">
+                    <input type="text" id="p2-name" placeholder="Player 2 Name" autocomplete="off">
+                    <input type="text" id="p3-name" placeholder="Player 3 Name" autocomplete="off">
+                    <input type="text" id="p4-name" placeholder="Player 4 Name" autocomplete="off">
                 </div>
 
                 <div class="form-group avatar-selection">
-                    <label>Agency Emblem</label>
+                    <label class="text-center">Select Agency Emblem</label>
                     <div class="avatars">
                         <label><input type="radio" name="avatar" value="💎" checked> <span>💎</span></label>
                         <label><input type="radio" name="avatar" value="🕵️‍♂️"> <span>🕵️‍♂️</span></label>
@@ -38,96 +246,377 @@
                 </div>
 
                 <button id="btn-enter" class="glow-btn">Enter the Manor</button>
-                <p id="error-msg" class="error hidden">Please enter team name and all 4 players.</p>
+                <p id="error-msg" class="error hidden">Please enter a team name and all 4 player names to proceed.</p>
             </div>
         </section>
 
-        <section id="screen-intro" class="screen hidden">
+        <section id="screen-intro" class="screen">
             <div class="glass-panel text-center">
                 <h2>The Crime Scene</h2>
-                
+                <div style="font-size: 4rem; margin: 10px 0; animation: pulse 2s infinite;">💎</div>
                 <p class="story-text">
-                    "Lord Judas is a wealthy, elderly nobleman who lives in Judas Manor, a grand estate on the outskirts of the city. He owns a legendary diamond called <strong>"The Judas Eye"</strong>, kept in a glass case in his private study.<br><br>
+                    "Lord Judas is a wealthy, elderly nobleman who lives in Judas Manor, a grand estate on the outskirts of the city. He owns a legendary diamond called <strong class="accent-text">"The Judas Eye"</strong>, kept in a glass case in his private study.<br><br>
                     One morning, Lord Judas discovers it is gone. The police are called in. Lord Judas was away on a business trip overnight, leaving four residents in the manor. All four are suspects."
                 </p>
-                <button id="btn-start-inv" class="glow-btn">Start Investigation</button>
+                <button id="btn-start-inv" class="glow-btn">Accept The Case</button>
             </div>
         </section>
 
-        <section id="screen-hub" class="screen hidden">
+        <section id="screen-hub" class="screen">
             <div class="header-bar">
-                <span>Team: <strong id="hub-team-name"></strong></span>
-                <span class="timer-box">Time: <span id="main-timer">07:00</span></span>
+                <span>Agency: <strong id="hub-team-name" class="accent-text"></strong></span>
+                <span>Time: <span id="main-timer" class="timer-box">07:00</span></span>
             </div>
             
             <div class="glass-panel">
                 <h3>Select Your File</h3>
-                <p class="instruction">Each investigator must read their assigned suspect file.</p>
+                <p style="color: var(--text-muted);">Each investigator must read their assigned suspect file.</p>
                 <div class="hub-grid" id="suspect-hubs">
                     </div>
             </div>
         </section>
 
-        <section id="screen-reading" class="screen hidden">
+        <section id="screen-reading" class="screen">
             <div class="header-bar alert-bar">
-                <span>Reading Time!</span>
-                <span class="timer-box">Time Left: <span id="read-timer">01:00</span></span>
+                <span>Investigating...</span>
+                <span>Time Left: <span id="read-timer" class="timer-box" style="color: #fca5a5;">01:00</span></span>
             </div>
             <div class="glass-panel">
                 <h3 id="read-suspect-name" class="accent-text"></h3>
-                <p><strong>Status:</strong> <span id="read-status"></span></p>
-                <p><strong>Characteristics:</strong> <span id="read-chars"></span></p>
+                <p><strong>Status:</strong> <span id="read-status" style="color: var(--text-muted);"></span></p>
+                <p><strong>Profile:</strong> <span id="read-chars" style="color: var(--text-muted);"></span></p>
                 <hr>
                 <p id="read-speech" class="story-text speech-text"></p>
-                <button id="btn-skip-read" class="outline-btn">I'm ready (Skip Timer)</button>
+                <button id="btn-skip-read" class="outline-btn">I've memorized the clues (Skip)</button>
             </div>
         </section>
 
-        <section id="screen-questions" class="screen hidden">
+        <section id="screen-questions" class="screen">
             <div class="glass-panel case-file">
                 <h3 id="q-title">Interrogation</h3>
+                <hr style="background: #cbd5e1;">
                 <p id="q-text" class="question-text"></p>
                 <div id="q-options" class="options-grid"></div>
             </div>
         </section>
 
-        <section id="screen-voting" class="screen hidden">
+        <section id="screen-voting" class="screen">
             <div class="header-bar alert-bar">
                 <span>The Final Verdict</span>
-                <span class="timer-box">Vote Time: <span id="vote-timer">07:00</span></span>
+                <span>Time Left: <span id="vote-timer" class="timer-box" style="color: #fca5a5;">07:00</span></span>
             </div>
             <div class="glass-panel text-center">
-                
-                <p>Discuss with your team. Who stole The Judas Eye?</p>
+                <h2>Who Stole The Eye?</h2>
+                <p style="color: var(--text-muted);">Discuss with your team and select the culprit.</p>
                 <div class="vote-grid">
                     <div class="vote-card" data-suspect="Julia (Head Maid)">
-                        <div class="icon">🧹</div><h4>Julia</h4><p>Head Maid</p>
+                        <div class="icon">🧹</div><h4 class="accent-text">Julia</h4><p>Head Maid</p>
                     </div>
                     <div class="vote-card" data-suspect="Ann (Stepmother)">
-                        <div class="icon">🍷</div><h4>Ann</h4><p>Stepmother</p>
+                        <div class="icon">🍷</div><h4 class="accent-text">Ann</h4><p>Stepmother</p>
                     </div>
                     <div class="vote-card" data-suspect="Lilly (Daughter)">
-                        <div class="icon">📚</div><h4>Lilly</h4><p>Daughter</p>
+                        <div class="icon">📚</div><h4 class="accent-text">Lilly</h4><p>Daughter</p>
                     </div>
                     <div class="vote-card" data-suspect="Lucas (Gardener)">
-                        <div class="icon">👨‍🌾</div><h4>Lucas</h4><p>Gardener</p>
+                        <div class="icon">👨‍🌾</div><h4 class="accent-text">Lucas</h4><p>Gardener</p>
                     </div>
                 </div>
-                <button id="btn-submit-case" class="glow-btn disabled" disabled>Submit Arrest Warrant</button>
+                <button id="btn-submit-case" class="glow-btn disabled" disabled style="background: var(--accent-red); box-shadow: 0 5px 20px rgba(225,29,72,0.4);">Issue Arrest Warrant</button>
             </div>
         </section>
 
-        <section id="screen-result" class="screen hidden">
+        <section id="screen-result" class="screen">
             <div class="glass-panel text-center">
-                <h2>Case Closed</h2>
-                <div class="result-data">
-                    <p><strong>Team:</strong> <span id="res-team"></span></p>
-                    <p><strong>Total Score:</strong> <span id="res-score"></span> / 12</p>
-                    <p><strong>Arrested:</strong> <span id="res-culprit" class="accent-text"></span></p>
+                <h2 style="font-size: 2.5rem; margin-bottom: 30px;">Case Closed</h2>
+                <div style="background: rgba(0,0,0,0.3); padding: 30px; border-radius: 16px; margin-bottom: 30px; text-align: left;">
+                    <p style="font-size: 1.2rem; margin-bottom: 15px;"><strong>Agency:</strong> <span id="res-team" class="accent-text"></span></p>
+                    <p style="font-size: 1.2rem; margin-bottom: 15px;"><strong>Accuracy Score:</strong> <span id="res-score" class="accent-text" style="font-size: 1.5rem;"></span> <span style="color: var(--text-muted);">/ 12</span></p>
+                    <p style="font-size: 1.2rem;"><strong>Arrested Suspect:</strong> <span id="res-culprit" style="color: var(--accent-red); font-weight: bold;"></span></p>
                 </div>
-                <div id="loading-status" class="status-msg">Transmitting data to HQ...</div>
+                <div id="loading-status" style="padding: 15px; border-radius: 8px; font-weight: bold; background: rgba(251,191,36,0.1); color: var(--accent-gold);">
+                    <span style="display:inline-block; animation: spin 1s linear infinite;">⏳</span> Transmitting data to HQ...
+                </div>
             </div>
         </section>
+
+    </div>
+
+    <script>
+        const suspectsData = [
+            {
+                name: "Julia", role: "Head Maid", chars: "Royal, quiet, observant",
+                speech: "I have worked in this place for over twenty years. That night, I went back to my room at 9 PM as usual. I heard footsteps near the garden around midnight, but I thought it was the cat. Lord Judas has a grey Persian and it often wanders at night.<br><br>Next day, I went inside Lord Judas's family bedrooms to wake all of them. Why I can get into their rooms? Ah, every staff in this house has accessed keys for every room. My Lord and his daughter were already downstairs, but she did not come down to breakfast. I found that unusual, because she had never missed a meal. As for the gardener, I noticed his light was still on. His cottage was outside near the garden entrance, and I could see it from the house's window. I asked Lord Judas whether I should tell that man to go outside and work or not, but my Lord refused it. Frankly, I wanted to tell my Lord that I saw him walked out Ann's room. However, I am just a maid. So, I remained silent.<br>That is all I have to say.",
+                questions: [
+                    { q: `"..., but I thought it was the cat." "it" in this line refers to …`, options: ["A. footsteps", "B. the cat", "C. the garden"], ans: "A. footsteps" },
+                    { q: `"..., but she did not come down to breakfast." "she" in this line refers to …`, options: ["A. Julia", "B. Lilly", "C. Ann"], ans: "C. Ann" },
+                    { q: `"Frankly, I wanted to tell my Lord that I saw him walked out Ann's room..." "him" in this line refers to …`, options: ["A. the cottage", "B. Lord Judas", "C. Lucas"], ans: "C. Lucas" }
+                ]
+            },
+            {
+                name: "Ann", role: "Stepmother", chars: "Arrogant, beautiful, determine",
+                speech: "Yesterday? I was in my room the entire evening and did not join the dinner. My husband and I had an argument, so I quietly drank wine and cried alone. Around 10 p.m., I went to the kitchen to washed my wine glasses before going to bed. I did not hear anything. Actually, this house is always making strange sounds at night.<br><br>The diamond? Honestly, I never understood why he kept it out in the first place. It should have been locked away in a bank. I told him so many times, but he never listens. He is always reckless with anything valuable. Every staff, including the maid and the gardener, knows where the diamond is. Especially the one who works for a long time. She is the ONLY one who has all keys in this house and knows which place she can hide it after stealing. Instead of wasting time questioning me, go ask that arrogant maid about what she had done last night.",
+                questions: [
+                    { q: `"My husband and I had an argument,..." "My husband" in this line refers to...`, options: ["A. Lucas", "B. Lord Judas", "C. Julia"], ans: "B. Lord Judas" },
+                    { q: `"Honestly, I never understood why he kept it out..." "it" in this line refers to...`, options: ["A. the maid", "B. the diamond", "C. the bank"], ans: "B. the diamond" },
+                    { q: `"Especially the one who works for a long time..." "the one" in this line refers to...`, options: ["A. Lilly", "B. Ann", "C. Julia"], ans: "C. Julia" }
+                ]
+            },
+            {
+                name: "Lilly", role: "Daughter", chars: "Optimistic, generous, shy",
+                speech: "Um, hi... I mean, I still can't really believe it happened. That diamond is a very important thing for my family. Dad always tells me to take care of it.<br><br>That night, I was reading books in the library until about 10.30. Then, I went to the kitchen to make hot tea because it helps me feel cozy. When I got there, the light was already on. I thought that Julia forgot to turn it off. Frankly speaking, I wasn't afraid of ghosts, so I made my tea and went back to my room. Ah… Before I got into my room, I heard a man voice from Ann's room. It was not my father, but it kinda… familiar? I didn't think it is the gardener because he mostly worked in the garden and never came inside our house. They sounded seriously. Or maybe excited? I’m not really sure. Her voice was low, so I couldn’t hear anything properly. I didn’t stay there because that would be rude. So, I just went on to bed after that. I honestly didn’t think it meant anything.",
+                questions: [
+                    { q: `"... because it helps me feel cozy." "it" in this line refers to...`, options: ["A. the diamond", "B. the books", "C. the hot tea"], ans: "C. the hot tea" },
+                    { q: `"When I got there, the light was already on." "there" in this line refers to...`, options: ["A. the library", "B. the kitchen", "C. Lilly's room"], ans: "C. Lilly's room" },
+                    { q: `"Her voice was low,..." "Her" in this line refers to...`, options: ["A. Lilly", "B. Ann", "C. Julia"], ans: "B. Ann" }
+                ]
+            },
+            {
+                name: "Lucas", role: "Gardener", chars: "Serious, determined, hardworking",
+                speech: "Yesterday, I came back to my cottage around 6.15 in the evening. I had dinner alone. After that, I decided to took a shower, put on my boots, and walked to the garden to water flowers. Yes, that is part of my responsibility. Around 8 P.M., I locked the garden's entrance before going to bed.<br><br>Oh! I think the alarm panel is broken. Its old sensor sometimes takes a moment to settle after the kitchen lights are switched on. I remember glancing at the window and saw the kitchen's light around 10 p.m. Nothing unusual enough to report. I am only trying to be precise.<br><br>I've worked here for two years. I respect Lord Judas and his family. I have been served these people for ten years. Even though Ann is my new mistress, I still adore and respect her. I swear I would never do anything to harm them. The diamond is a loss for all of us. I hope the police find it soon.",
+                questions: [
+                    { q: `"Yes, that is part of my responsibility." "that" in this line refers to...`, options: ["A. watering flowers", "B. walking to the garden", "C. going to bed"], ans: "A. watering flowers" },
+                    { q: `"Its old sensor sometimes takes a moment..." "its" in this line refers to...`, options: ["A. the kitchen lights", "B. the alarm panel", "C. the garden's entrance"], ans: "B. the alarm panel" },
+                    { q: `"I swear I would never do anything to harm them." "them" in this line refers to...`, options: ["A. The new mistress", "B. Ann and Lilly", "C. Lord Judas and his family"], ans: "C. Lord Judas and his family" }
+                ]
+            }
+        ];
+
+        // LING APP SCRIPT ของครู
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbzFaATyqxzmZ6PGrsaBX2xgT3Cce97GChuFNXGW_V5b4uTLTnuUjWWzBG5LpDyxZb7F0g/exec";
+
+        let game = {
+            team: "", players: [], avatar: "", totalScore: 0,
+            mainTime: 420, voteTime: 420, timeUsed: 0,
+            mainInterval: null, readInterval: null, voteInterval: null,
+            currentPlayerIndex: null, currentQuestionIndex: 0,
+            votedCulprit: ""
+        };
+
+        const screens = {
+            lobby: document.getElementById('screen-lobby'),
+            intro: document.getElementById('screen-intro'),
+            hub: document.getElementById('screen-hub'),
+            reading: document.getElementById('screen-reading'),
+            questions: document.getElementById('screen-questions'),
+            voting: document.getElementById('screen-voting'),
+            result: document.getElementById('screen-result')
+        };
+
+        function switchScreen(id) {
+            Object.values(screens).forEach(s => s.classList.remove('active'));
+            screens[id].classList.add('active');
+        }
+
+        document.getElementById('btn-enter').addEventListener('click', () => {
+            const tName = document.getElementById('team-name').value.trim();
+            const p1 = document.getElementById('p1-name').value.trim();
+            const p2 = document.getElementById('p2-name').value.trim();
+            const p3 = document.getElementById('p3-name').value.trim();
+            const p4 = document.getElementById('p4-name').value.trim();
+
+            if(!tName || !p1 || !p2 || !p3 || !p4) {
+                document.getElementById('error-msg').classList.remove('hidden');
+                return;
+            }
+            
+            game.team = tName;
+            game.avatar = document.querySelector('input[name="avatar"]:checked').value;
+            game.players = [
+                { name: p1, suspect: suspectsData[0], status: 'Pending' },
+                { name: p2, suspect: suspectsData[1], status: 'Pending' },
+                { name: p3, suspect: suspectsData[2], status: 'Pending' },
+                { name: p4, suspect: suspectsData[3], status: 'Pending' }
+            ];
+
+            switchScreen('intro');
+        });
+
+        document.getElementById('btn-start-inv').addEventListener('click', () => {
+            switchScreen('hub');
+            renderHub();
+            startMainTimer();
+        });
+
+        function renderHub() {
+            document.getElementById('hub-team-name').textContent = `${game.team} ${game.avatar}`;
+            const hubGrid = document.getElementById('suspect-hubs');
+            hubGrid.innerHTML = '';
+            
+            let allDone = true;
+
+            game.players.forEach((p, index) => {
+                const card = document.createElement('div');
+                card.className = `hub-card ${p.status === 'Done' ? 'done' : ''}`;
+                card.innerHTML = `
+                    <h4>${p.name}</h4>
+                    <p style="color:#cbd5e1; font-size:0.9rem;">Target: <strong>${p.suspect.name}</strong></p>
+                    <span class="status-badge">${p.status}</span>
+                `;
+                if (p.status !== 'Done') {
+                    allDone = false;
+                    card.onclick = () => startReadingPhase(index);
+                }
+                hubGrid.appendChild(card);
+            });
+
+            if (allDone) {
+                clearInterval(game.mainInterval);
+                switchScreen('voting');
+                startVotingTimer();
+            }
+        }
+
+        function formatTime(seconds) {
+            let m = Math.floor(seconds / 60);
+            let s = seconds % 60;
+            return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        function startMainTimer() {
+            game.mainInterval = setInterval(() => {
+                game.mainTime--;
+                game.timeUsed++;
+                document.getElementById('main-timer').textContent = formatTime(game.mainTime);
+                if(game.mainTime <= 0) {
+                    clearInterval(game.mainInterval);
+                    switchScreen('voting');
+                    startVotingTimer();
+                }
+            }, 1000);
+        }
+
+        function startReadingPhase(pIndex) {
+            game.currentPlayerIndex = pIndex;
+            const player = game.players[pIndex];
+            player.status = 'Reading';
+            
+            document.getElementById('read-suspect-name').textContent = `File: ${player.suspect.name}`;
+            document.getElementById('read-status').textContent = player.suspect.role;
+            document.getElementById('read-chars').textContent = player.suspect.chars;
+            document.getElementById('read-speech').innerHTML = `"${player.suspect.speech}"`;
+            
+            switchScreen('reading');
+            
+            let readTime = 60;
+            document.getElementById('read-timer').textContent = formatTime(readTime);
+            
+            game.readInterval = setInterval(() => {
+                readTime--;
+                document.getElementById('read-timer').textContent = formatTime(readTime);
+                if(readTime <= 0) {
+                    clearInterval(game.readInterval);
+                    startQuestionsPhase();
+                }
+            }, 1000);
+        }
+
+        document.getElementById('btn-skip-read').onclick = () => {
+            clearInterval(game.readInterval);
+            startQuestionsPhase();
+        };
+
+        function startQuestionsPhase() {
+            game.currentQuestionIndex = 0;
+            switchScreen('questions');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const player = game.players[game.currentPlayerIndex];
+            const qData = player.suspect.questions[game.currentQuestionIndex];
+            
+            document.getElementById('q-title').textContent = `Interrogation: Q${game.currentQuestionIndex + 1}/3`;
+            document.getElementById('q-text').textContent = qData.q;
+            
+            const optionsGrid = document.getElementById('q-options');
+            optionsGrid.innerHTML = '';
+            
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.onclick = () => handleAnswer(opt, qData.ans);
+                optionsGrid.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(selected, correct) {
+            if(selected === correct) game.totalScore++;
+            
+            game.currentQuestionIndex++;
+            if(game.currentQuestionIndex < 3) {
+                renderQuestion();
+            } else {
+                game.players[game.currentPlayerIndex].status = 'Done';
+                switchScreen('hub');
+                renderHub();
+            }
+        }
+
+        function startVotingTimer() {
+            game.voteInterval = setInterval(() => {
+                game.voteTime--;
+                game.timeUsed++;
+                document.getElementById('vote-timer').textContent = formatTime(game.voteTime);
+                if(game.voteTime <= 0) {
+                    clearInterval(game.voteInterval);
+                    submitFinalCase();
+                }
+            }, 1000);
+        }
+
+        document.querySelectorAll('.vote-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.vote-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                game.votedCulprit = card.getAttribute('data-suspect');
+                document.getElementById('btn-submit-case').classList.remove('disabled');
+                document.getElementById('btn-submit-case').removeAttribute('disabled');
+            });
+        });
+
+        document.getElementById('btn-submit-case').onclick = () => {
+            clearInterval(game.voteInterval);
+            submitFinalCase();
+        };
+
+        function submitFinalCase() {
+            switchScreen('result');
+            document.getElementById('res-team').textContent = `${game.team} ${game.avatar}`;
+            document.getElementById('res-score').textContent = game.totalScore;
+            document.getElementById('res-culprit').textContent = game.votedCulprit || "No one (Time Out)";
+
+            const payload = JSON.stringify({
+                groupName: game.team,
+                players: game.players.map(p => p.name).join(', '),
+                avatar: game.avatar,
+                score: game.totalScore,
+                timeUsed: game.timeUsed,
+                votedCulprit: game.votedCulprit || "None"
+            });
+
+            fetch(GAS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: payload
+            })
+            .then(() => {
+                const msg = document.getElementById('loading-status');
+                msg.innerHTML = "✅ Data securely transmitted to headquarters!";
+                msg.style.background = "rgba(16, 185, 129, 0.1)";
+                msg.style.color = "#34d399";
+            })
+            .catch(() => {
+                const msg = document.getElementById('loading-status');
+                msg.innerHTML = "❌ Error transmitting data. Please screenshot this page.";
+                msg.style.background = "rgba(225, 29, 72, 0.2)";
+                msg.style.color = "#fca5a5";
+            });
+        }
+    </script>
+</body>
+</html>
 
     </div>
     <script src="script.js"></script>
