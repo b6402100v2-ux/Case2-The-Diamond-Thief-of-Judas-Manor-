@@ -17,6 +17,7 @@
             --accent-gold: #d4af37;
             --accent-gold-glow: rgba(212, 175, 55, 0.4);
             --accent-red: #e11d48;
+            --accent-green: #10b981;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --font-heading: 'Cinzel', serif;
@@ -26,7 +27,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            /* พื้นหลังไล่สีเข้มๆ ดูลึกลับ */
             background: radial-gradient(circle at 50% 0%, #1e293b 0%, var(--bg-dark) 80%);
             color: var(--text-main);
             font-family: var(--font-body);
@@ -38,7 +38,6 @@
             overflow-x: hidden;
         }
 
-        /* ตกแต่งฉากหลังให้มีแสงสลัวๆ */
         body::before {
             content: ''; position: fixed; top: -20%; left: -10%; width: 50vw; height: 50vw;
             background: radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 70%); z-index: -1;
@@ -46,172 +45,98 @@
 
         .app-container {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             position: relative;
         }
 
-        /* ระบบสลับหน้าจอ */
-        .screen { 
-            display: none; 
-            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
-        }
-        .screen.active { 
-            display: block; 
-        }
+        .screen { display: none; animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .screen.active { display: block; }
 
         @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(30px); filter: blur(5px); } 
+            from { opacity: 0; transform: translateY(20px); filter: blur(5px); } 
             to { opacity: 1; transform: translateY(0); filter: blur(0); } 
         }
 
-        /* Typography */
         h1, h2, h3 { font-family: var(--font-heading); color: var(--accent-gold); letter-spacing: 2px; margin-bottom: 15px; }
         h1 { font-size: 3rem; text-align: center; text-shadow: 0 0 20px var(--accent-gold-glow); line-height: 1.2; }
         .subtitle { text-align: center; color: var(--text-muted); font-size: 1.2rem; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 30px; }
         .accent-text { color: var(--accent-gold); }
+        .text-center { text-align: center; }
 
-        /* Glassmorphism Panels */
         .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 40px;
+            background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); border-radius: 20px; padding: 40px;
             box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.1);
         }
 
-        .text-center { text-align: center; }
-
-        /* Forms & Inputs */
         .form-group { margin-bottom: 25px; }
         label { display: block; margin-bottom: 10px; color: var(--text-muted); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; }
         
         input[type="text"] {
-            width: 100%; padding: 15px 20px;
-            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
-            color: white; border-radius: 12px; font-family: var(--font-body);
-            font-size: 1rem; transition: all 0.3s ease;
+            width: 100%; padding: 15px 20px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
+            color: white; border-radius: 12px; font-family: var(--font-body); font-size: 1rem; transition: all 0.3s ease;
         }
-        input[type="text"]:focus { 
-            outline: none; border-color: var(--accent-gold); 
-            box-shadow: 0 0 15px rgba(212,175,55,0.2); background: rgba(0,0,0,0.6);
-        }
+        input[type="text"]:focus { outline: none; border-color: var(--accent-gold); background: rgba(0,0,0,0.6); }
         .players-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
 
-        /* Avatars */
         .avatars { display: flex; gap: 20px; justify-content: center; margin-top: 10px; }
         .avatars label { cursor: pointer; font-size: 2.5rem; transition: transform 0.2s; }
         .avatars label:hover { transform: scale(1.1); }
         .avatars input { display: none; }
-        .avatars span { 
-            display: inline-block; padding: 15px; border-radius: 50%; 
-            border: 2px solid transparent; transition: all 0.3s;
-            background: rgba(0,0,0,0.3);
-        }
-        .avatars input:checked + span { 
-            border-color: var(--accent-gold); 
-            background: rgba(212,175,55,0.15); 
-            box-shadow: 0 0 20px rgba(212,175,55,0.3);
-        }
+        .avatars span { display: inline-block; padding: 15px; border-radius: 50%; border: 2px solid transparent; background: rgba(0,0,0,0.3); transition: 0.3s; }
+        .avatars input:checked + span { border-color: var(--accent-gold); background: rgba(212,175,55,0.15); box-shadow: 0 0 20px rgba(212,175,55,0.3); }
 
-        /* Buttons */
-        button { 
-            font-family: var(--font-body); font-weight: 600; font-size: 1.1rem; letter-spacing: 1px;
-            cursor: pointer; border-radius: 12px; transition: all 0.3s ease; 
-            width: 100%; padding: 18px; text-transform: uppercase;
-        }
-        .glow-btn { 
-            background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%); 
-            color: #000; border: none; 
-            box-shadow: 0 8px 20px rgba(212,175,55,0.3); margin-top: 20px; 
-        }
-        .glow-btn:hover:not(:disabled) { 
-            box-shadow: 0 12px 30px rgba(212,175,55,0.5); transform: translateY(-3px); 
-        }
-        .glow-btn.disabled { 
-            background: #334155; color: #94a3b8; box-shadow: none; cursor: not-allowed; 
-        }
-        .outline-btn { 
-            background: transparent; color: var(--text-main); 
-            border: 2px solid var(--text-muted); margin-top: 20px; 
-        }
+        button { font-family: var(--font-body); font-weight: 600; font-size: 1.1rem; letter-spacing: 1px; cursor: pointer; border-radius: 12px; transition: all 0.3s ease; width: 100%; padding: 18px; text-transform: uppercase; }
+        .glow-btn { background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%); color: #000; border: none; box-shadow: 0 8px 20px rgba(212,175,55,0.3); margin-top: 20px; }
+        .glow-btn:hover:not(:disabled) { box-shadow: 0 12px 30px rgba(212,175,55,0.5); transform: translateY(-3px); }
+        .glow-btn.disabled { background: #334155; color: #94a3b8; box-shadow: none; cursor: not-allowed; }
+        .outline-btn { background: transparent; color: var(--text-main); border: 2px solid var(--text-muted); margin-top: 20px; }
         .outline-btn:hover { background: rgba(255,255,255,0.05); border-color: var(--text-main); }
 
-        /* Story & Reading */
-        .story-text { 
-            line-height: 1.9; font-size: 1.1rem; color: #e2e8f0;
-            background: rgba(0,0,0,0.25); padding: 25px; 
-            border-radius: 12px; border-left: 4px solid var(--accent-gold); 
-            text-align: left; margin: 20px 0;
-        }
-        .speech-text { font-style: italic; font-weight: 300; }
-
-        /* Headers & Timers */
-        .header-bar { 
-            display: flex; justify-content: space-between; align-items: center; 
-            background: var(--glass-bg); padding: 15px 25px; 
-            border-radius: 16px; margin-bottom: 25px; border: 1px solid var(--glass-border); 
-            font-weight: 600; backdrop-filter: blur(10px);
-        }
+        .header-bar { display: flex; justify-content: space-between; align-items: center; background: var(--glass-bg); padding: 15px 25px; border-radius: 16px; margin-bottom: 25px; border: 1px solid var(--glass-border); font-weight: 600; backdrop-filter: blur(10px); }
         .alert-bar { border-color: rgba(225, 29, 72, 0.4); background: rgba(225, 29, 72, 0.1); }
         .timer-box { font-family: var(--font-heading); font-size: 1.4rem; color: var(--accent-gold); text-shadow: 0 0 10px rgba(212,175,55,0.5); }
 
-        /* Hub Grid */
         .hub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 25px; }
-        .hub-card { 
-            background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); 
-            padding: 25px; border-radius: 16px; text-align: center; 
-            cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;
-        }
+        .hub-card { background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); padding: 25px; border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
         .hub-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent-gold); opacity: 0; transition: 0.3s; }
-        .hub-card:hover { border-color: var(--accent-gold); background: rgba(212,175,55,0.05); transform: translateY(-5px); }
-        .hub-card:hover::before { opacity: 1; }
-        .hub-card h4 { color: white; font-size: 1.3rem; margin-bottom: 5px; }
-        
-        .hub-card.done { border-color: #10b981; opacity: 0.6; pointer-events: none; }
-        .hub-card.done::before { background: #10b981; opacity: 1; }
-        
-        .status-badge { 
-            display: inline-block; padding: 6px 15px; border-radius: 30px; 
-            font-size: 0.85rem; margin-top: 15px; background: #334155; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
-        }
+        .hub-card:hover:not(.done) { border-color: var(--accent-gold); background: rgba(212,175,55,0.05); transform: translateY(-5px); }
+        .hub-card:hover:not(.done)::before { opacity: 1; }
+        .hub-card.done { border-color: var(--accent-green); opacity: 0.6; pointer-events: none; }
+        .hub-card.done::before { background: var(--accent-green); opacity: 1; }
+        .status-badge { display: inline-block; padding: 6px 15px; border-radius: 30px; font-size: 0.85rem; margin-top: 15px; background: #334155; font-weight: 600; text-transform: uppercase; }
         .done .status-badge { background: rgba(16, 185, 129, 0.2); color: #34d399; }
 
-        /* Questions */
-        .case-file { background: #fdf6e3; color: #1e293b; border: none; box-shadow: inset 0 0 30px rgba(0,0,0,0.05); }
-        .case-file h3 { color: #854d0e; }
-        .question-text { font-size: 1.25rem; font-weight: 600; margin-bottom: 25px; line-height: 1.6; }
-        .options-grid { display: flex; flex-direction: column; gap: 12px; }
-        .option-btn { 
-            background: white; border: 2px solid #cbd5e1; color: #1e293b; 
-            text-align: left; padding: 18px 20px; border-radius: 12px; 
-            font-size: 1.05rem; font-weight: 500; text-transform: none;
-        }
+        /* Investigation Layout (Reading + Quiz side by side on PC) */
+        .investigation-container { display: flex; flex-direction: column; gap: 20px; }
+        @media (min-width: 800px) { .investigation-container { flex-direction: row; align-items: stretch; } }
+        
+        .reading-panel { flex: 1; background: rgba(0,0,0,0.25); padding: 25px; border-radius: 12px; border-left: 4px solid var(--accent-gold); overflow-y: auto; max-height: 60vh; }
+        .quiz-panel { flex: 1; background: #fdf6e3; color: #1e293b; padding: 25px; border-radius: 12px; box-shadow: inset 0 0 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: center;}
+        
+        .story-text { line-height: 1.8; font-size: 1.1rem; color: #e2e8f0; }
+        .speech-text { font-style: italic; font-weight: 300; margin-top: 15px; }
+        
+        .question-text { font-size: 1.2rem; font-weight: 600; margin-bottom: 20px; line-height: 1.5; color: #854d0e; }
+        .options-grid { display: flex; flex-direction: column; gap: 10px; }
+        .option-btn { background: white; border: 2px solid #cbd5e1; color: #1e293b; text-align: left; padding: 15px 20px; border-radius: 12px; font-size: 1rem; font-weight: 500; text-transform: none; }
         .option-btn:hover { border-color: #854d0e; background: #fefce8; transform: translateX(5px); }
 
-        /* Voting */
-        .vote-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 30px 0; }
-        .vote-card { 
-            background: rgba(0,0,0,0.5); padding: 25px; border-radius: 16px; 
-            border: 2px solid var(--glass-border); cursor: pointer; transition: all 0.3s; 
-        }
-        .vote-card .icon { font-size: 3rem; margin-bottom: 15px; }
-        .vote-card.selected { 
-            border-color: var(--accent-red); background: rgba(225, 29, 72, 0.15); 
-            box-shadow: 0 0 25px rgba(225, 29, 72, 0.4); transform: scale(1.05);
-        }
+        /* Feedback Styles */
+        .feedback-item { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--text-muted); text-align: left;}
+        .feedback-item.correct { border-color: var(--accent-green); }
+        .feedback-item.wrong { border-color: var(--accent-red); }
+        .feedback-q { font-weight: 600; margin-bottom: 5px; font-size: 0.95rem;}
+        .feedback-ans { font-size: 0.9rem; color: var(--text-muted); }
 
-        /* Utility */
+        .vote-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 30px 0; }
+        .vote-card { background: rgba(0,0,0,0.5); padding: 25px; border-radius: 16px; border: 2px solid var(--glass-border); cursor: pointer; transition: all 0.3s; }
+        .vote-card .icon { font-size: 3rem; margin-bottom: 15px; }
+        .vote-card.selected { border-color: var(--accent-red); background: rgba(225, 29, 72, 0.15); transform: scale(1.05); }
+
         .hidden { display: none !important; }
         .error { color: #fca5a5; margin-top: 15px; font-size: 0.95rem; text-align: center; background: rgba(225,29,72,0.2); padding: 10px; border-radius: 8px;}
         hr { border: 0; height: 1px; background: var(--glass-border); margin: 20px 0; }
-        
-        @media (max-width: 600px) {
-            .players-grid, .hub-grid, .vote-grid { grid-template-columns: 1fr; }
-            h1 { font-size: 2.2rem; }
-            .glass-panel { padding: 25px; }
-        }
     </style>
 </head>
 <body>
@@ -254,7 +179,7 @@
             <div class="glass-panel text-center">
                 <h2>The Crime Scene</h2>
                 <div style="font-size: 4rem; margin: 10px 0; animation: pulse 2s infinite;">💎</div>
-                <p class="story-text">
+                <p class="story-text" style="background: rgba(0,0,0,0.25); padding: 25px; border-radius: 12px; border-left: 4px solid var(--accent-gold); text-align: left;">
                     "Lord Judas is a wealthy, elderly nobleman who lives in Judas Manor, a grand estate on the outskirts of the city. He owns a legendary diamond called <strong class="accent-text">"The Judas Eye"</strong>, kept in a glass case in his private study.<br><br>
                     One morning, Lord Judas discovers it is gone. The police are called in. Lord Judas was away on a business trip overnight, leaving four residents in the manor. All four are suspects."
                 </p>
@@ -270,33 +195,54 @@
             
             <div class="glass-panel">
                 <h3>Select Your File</h3>
-                <p style="color: var(--text-muted);">Each investigator must read their assigned suspect file.</p>
+                <p style="color: var(--text-muted);">Pass the device to the assigned investigator.</p>
                 <div class="hub-grid" id="suspect-hubs">
                     </div>
             </div>
         </section>
 
-        <section id="screen-reading" class="screen">
-            <div class="header-bar alert-bar">
-                <span>Investigating...</span>
-                <span>Time Left: <span id="read-timer" class="timer-box" style="color: #fca5a5;">01:00</span></span>
+        <section id="screen-investigation" class="screen">
+            <div class="header-bar alert-bar" id="inv-header">
+                <span id="inv-player-name">Investigator</span>
+                <span>Time Left: <span id="inv-timer" class="timer-box" style="color: #fca5a5;">01:00</span></span>
             </div>
+            
             <div class="glass-panel">
-                <h3 id="read-suspect-name" class="accent-text"></h3>
-                <p><strong>Status:</strong> <span id="read-status" style="color: var(--text-muted);"></span></p>
-                <p><strong>Profile:</strong> <span id="read-chars" style="color: var(--text-muted);"></span></p>
-                <hr>
-                <p id="read-speech" class="story-text speech-text"></p>
-                <button id="btn-skip-read" class="outline-btn">I've memorized the clues (Skip)</button>
+                <div class="investigation-container">
+                    <div class="reading-panel">
+                        <h3 id="read-suspect-name" class="accent-text" style="margin-bottom: 5px;"></h3>
+                        <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 10px;" id="read-profile"></p>
+                        <hr style="border-color: rgba(255,255,255,0.2); margin: 10px 0;">
+                        <p id="read-speech" class="story-text speech-text"></p>
+                    </div>
+
+                    <div class="quiz-panel" id="quiz-area">
+                        <div id="quiz-waiting" class="text-center" style="color: #64748b; padding: 20px;">
+                            <div style="font-size: 3rem; margin-bottom: 15px;">⏳</div>
+                            <h3 style="color: #475569;">Reading Phase</h3>
+                            <p>Read the testimony carefully. Questions will appear when time is up.</p>
+                            <button id="btn-skip-read" class="outline-btn" style="border-color: #94a3b8; color: #475569;">I'm ready (Skip Timer)</button>
+                        </div>
+
+                        <div id="quiz-active" class="hidden">
+                            <h3 id="q-title" style="color: #854d0e; font-family: var(--font-body); font-size: 1.1rem; text-transform: none;">Question 1/3</h3>
+                            <p id="q-text" class="question-text"></p>
+                            <div id="q-options" class="options-grid"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <section id="screen-questions" class="screen">
-            <div class="glass-panel case-file">
-                <h3 id="q-title">Interrogation</h3>
-                <hr style="background: #cbd5e1;">
-                <p id="q-text" class="question-text"></p>
-                <div id="q-options" class="options-grid"></div>
+        <section id="screen-feedback" class="screen">
+            <div class="glass-panel text-center">
+                <h2>Interrogation Report</h2>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Review your deductions before returning to the team.</p>
+                
+                <div id="feedback-list" style="margin-bottom: 25px;">
+                    </div>
+                
+                <button id="btn-return-hub" class="glow-btn">Return to Team Hub</button>
             </div>
         </section>
 
@@ -390,15 +336,16 @@
             mainTime: 420, voteTime: 420, timeUsed: 0,
             mainInterval: null, readInterval: null, voteInterval: null,
             currentPlayerIndex: null, currentQuestionIndex: 0,
-            votedCulprit: ""
+            votedCulprit: "",
+            currentAnswers: [] // เก็บผลตอบของคนที่กำลังเล่นเพื่อไปโชว์เฉลย
         };
 
         const screens = {
             lobby: document.getElementById('screen-lobby'),
             intro: document.getElementById('screen-intro'),
             hub: document.getElementById('screen-hub'),
-            reading: document.getElementById('screen-reading'),
-            questions: document.getElementById('screen-questions'),
+            investigation: document.getElementById('screen-investigation'),
+            feedback: document.getElementById('screen-feedback'),
             voting: document.getElementById('screen-voting'),
             result: document.getElementById('screen-result')
         };
@@ -422,6 +369,7 @@
             
             game.team = tName;
             game.avatar = document.querySelector('input[name="avatar"]:checked').value;
+            // ระบบสุ่มแจกบท (อิงตามลำดับกรอกชื่อ)
             game.players = [
                 { name: p1, suspect: suspectsData[0], status: 'Pending' },
                 { name: p2, suspect: suspectsData[1], status: 'Pending' },
@@ -450,7 +398,7 @@
                 card.className = `hub-card ${p.status === 'Done' ? 'done' : ''}`;
                 card.innerHTML = `
                     <h4>${p.name}</h4>
-                    <p style="color:#cbd5e1; font-size:0.9rem;">Target: <strong>${p.suspect.name}</strong></p>
+                    <p style="color:#cbd5e1; font-size:0.9rem;">File: <strong>${p.suspect.name}</strong></p>
                     <span class="status-badge">${p.status}</span>
                 `;
                 if (p.status !== 'Done') {
@@ -490,20 +438,27 @@
             game.currentPlayerIndex = pIndex;
             const player = game.players[pIndex];
             player.status = 'Reading';
+            game.currentAnswers = []; // รีเซ็ตผลตอบของคนนี้
             
-            document.getElementById('read-suspect-name').textContent = `File: ${player.suspect.name}`;
-            document.getElementById('read-status').textContent = player.suspect.role;
-            document.getElementById('read-chars').textContent = player.suspect.chars;
+            // อัปเดตหน้า UI
+            document.getElementById('inv-player-name').textContent = `Agent ${player.name}`;
+            document.getElementById('read-suspect-name').textContent = `Interview: ${player.suspect.name}`;
+            document.getElementById('read-profile').textContent = `${player.suspect.role} | ${player.suspect.chars}`;
             document.getElementById('read-speech').innerHTML = `"${player.suspect.speech}"`;
             
-            switchScreen('reading');
+            // สลับ panel โชว์แค่เวลารออ่าน
+            document.getElementById('quiz-waiting').classList.remove('hidden');
+            document.getElementById('quiz-active').classList.add('hidden');
+            document.getElementById('inv-timer').style.display = 'inline';
+
+            switchScreen('investigation');
             
             let readTime = 60;
-            document.getElementById('read-timer').textContent = formatTime(readTime);
+            document.getElementById('inv-timer').textContent = formatTime(readTime);
             
             game.readInterval = setInterval(() => {
                 readTime--;
-                document.getElementById('read-timer').textContent = formatTime(readTime);
+                document.getElementById('inv-timer').textContent = formatTime(readTime);
                 if(readTime <= 0) {
                     clearInterval(game.readInterval);
                     startQuestionsPhase();
@@ -517,8 +472,11 @@
         };
 
         function startQuestionsPhase() {
+            document.getElementById('quiz-waiting').classList.add('hidden');
+            document.getElementById('quiz-active').classList.remove('hidden');
+            document.getElementById('inv-timer').style.display = 'none'; // ซ่อนเวลาอ่าน
+            
             game.currentQuestionIndex = 0;
-            switchScreen('questions');
             renderQuestion();
         }
 
@@ -526,7 +484,7 @@
             const player = game.players[game.currentPlayerIndex];
             const qData = player.suspect.questions[game.currentQuestionIndex];
             
-            document.getElementById('q-title').textContent = `Interrogation: Q${game.currentQuestionIndex + 1}/3`;
+            document.getElementById('q-title').textContent = `Question ${game.currentQuestionIndex + 1} of 3`;
             document.getElementById('q-text').textContent = qData.q;
             
             const optionsGrid = document.getElementById('q-options');
@@ -536,23 +494,56 @@
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.textContent = opt;
-                btn.onclick = () => handleAnswer(opt, qData.ans);
+                btn.onclick = () => handleAnswer(opt, qData.ans, qData.q);
                 optionsGrid.appendChild(btn);
             });
         }
 
-        function handleAnswer(selected, correct) {
-            if(selected === correct) game.totalScore++;
+        function handleAnswer(selected, correct, questionText) {
+            const isCorrect = selected === correct;
+            if(isCorrect) game.totalScore++;
+            
+            // เก็บข้อมูลไว้โชว์หน้าเฉลย
+            game.currentAnswers.push({
+                q: questionText,
+                selected: selected,
+                correct: correct,
+                isCorrect: isCorrect
+            });
             
             game.currentQuestionIndex++;
             if(game.currentQuestionIndex < 3) {
                 renderQuestion();
             } else {
                 game.players[game.currentPlayerIndex].status = 'Done';
-                switchScreen('hub');
-                renderHub();
+                showFeedbackScreen();
             }
         }
+
+        function showFeedbackScreen() {
+            const list = document.getElementById('feedback-list');
+            list.innerHTML = '';
+
+            game.currentAnswers.forEach((ans, i) => {
+                const item = document.createElement('div');
+                item.className = `feedback-item ${ans.isCorrect ? 'correct' : 'wrong'}`;
+                item.innerHTML = `
+                    <div class="feedback-q">Q${i+1}: ${ans.q}</div>
+                    <div class="feedback-ans">
+                        Your Answer: <strong>${ans.selected}</strong> ${ans.isCorrect ? '✅' : '❌'}<br>
+                        ${!ans.isCorrect ? `Correct Answer: <strong style="color:var(--accent-green)">${ans.correct}</strong>` : ''}
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+
+            switchScreen('feedback');
+        }
+
+        document.getElementById('btn-return-hub').onclick = () => {
+            switchScreen('hub');
+            renderHub();
+        };
 
         function startVotingTimer() {
             game.voteInterval = setInterval(() => {
@@ -615,10 +606,5 @@
             });
         }
     </script>
-</body>
-</html>
-
-    </div>
-    <script src="script.js"></script>
 </body>
 </html>
