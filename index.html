@@ -558,7 +558,7 @@
             switchScreen('voting');
         }
 
-        // === RESOLUTION ===
+       // === RESOLUTION ===
         function showResolution() {
             switchScreen('result');
             
@@ -567,9 +567,16 @@
             document.getElementById('res-vote').textContent = game.voteScore;
             document.getElementById('res-total').textContent = totalScore;
 
+            // ส่งข้อมูลเพิ่มเติม (teamId และ playerIndex) ให้หลังบ้าน
             fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ 
-                action: "finalSubmit", groupName: game.teamName, playerName: game.playerName, 
-                avatar: game.avatar, score: totalScore, votedCulprit: selectedCulprit || "None" 
+                action: "finalSubmit", 
+                teamId: game.teamId, 
+                playerIndex: game.playerIndex, 
+                groupName: game.teamName, 
+                playerName: game.playerName, 
+                avatar: game.avatar, 
+                score: totalScore, 
+                votedCulprit: selectedCulprit || "None" 
             }) })
             .then(() => { document.getElementById('loading-status').innerHTML = "✅ Data saved securely to HQ!"; document.getElementById('loading-status').style.color = "#34d399"; })
             .catch(() => { document.getElementById('loading-status').innerHTML = "❌ Error saving data."; document.getElementById('loading-status').style.color = "#fca5a5"; });
